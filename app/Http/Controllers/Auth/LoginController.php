@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Socialite;
+
 class LoginController extends Controller
 {
     /*
@@ -35,5 +37,47 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+
+//             ## GOOGLE AUTH ##             //
+
+
+    /**
+     * Redirect the user to the GitHub authentication page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function redirectToProvider()
+    {
+        return Socialite::driver('github')->redirect();
+    }
+
+    /**
+     * Obtain the user information from GitHub.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function handleProviderCallback()
+    {
+        $user = Socialite::driver('github')->user();
+        $authUser = $this->findOrCreate($user);
+        Auth::login($user, true);
+        return redirect($this->redirectTo);
+    }
+
+    public function findOrCreate($user){
+        $authUser = User::where('provider_id', $user->id)->first();
+
+        if($authUser) {
+            return $authUser;
+        }
+
+        return User::Create([
+            'name'          => $user->name,
+            'email'         => $user->email,
+            'provider'      => 'GOOGLE',
+            'provider_id'   => $user->id
+        ]);
     }
 }
