@@ -50,9 +50,9 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function redirectToProvider()
+    public function redirectToProvider($provider)
     {
-        return Socialite::driver('google')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
     /**
@@ -60,15 +60,16 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function handleProviderCallback()
+    public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver('google')->user();
-        $authUser = $this->findOrCreate($user);
+        $user = Socialite::driver($provider)->user();
+        dd($user);
+        $authUser = $this->findOrCreate($user, $provider);
         Auth::login($user, true);
         return redirect($this->redirectTo);
     }
 
-    public function findOrCreate($user){
+    public function findOrCreate($user, $provider){
         $authUser = User::where('provider_id', $user->id)->first();
 
         if($authUser) {
@@ -78,7 +79,7 @@ class LoginController extends Controller
         return User::Create([
             'name'          => $user->name,
             'email'         => $user->email,
-            'provider'      => 'GOOGLE',
+            'provider'      => $provider,
             'provider_id'   => $user->id
         ]);
     }
