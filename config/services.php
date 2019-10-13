@@ -33,7 +33,7 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_AUTH_KEY'),
         'client_secret' => env('GOOGLE_AUTH_SECRET'),
-        'redirect' => 'https://https://meicmcbs.herokuapp.com/login/google/callback'
+        'redirect' => 'https://meicmcbs.herokuapp.com/login/google/callback'
     ]
 
 ];
