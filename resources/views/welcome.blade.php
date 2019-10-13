@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
         <title>Laravel</title>
 
@@ -80,21 +81,49 @@
             @endif
 
             <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
+                
+                <!-- PAYPAL -->
+                    <div id="paypal-button-container"></div>
+                <!-- END PAYPAL -->
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://vapor.laravel.com">Vapor</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
             </div>
         </div>
+
+        <script
+            src="https://www.paypal.com/sdk/js?client-id=Af9Cqta-_ZlnJTDIlKBToAGM5etqil_7O1khFrtq1iVwMezOsT9Khn4tFiNwDGr9aSoov6He0JDsx8lh&currency=EUR">
+        </script>
+
+        <script>
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    // Set up the transaction
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: '0.01',
+                            }
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    // Capture the funds from the transaction
+                    return actions.order.capture().then(function(details) {
+                        // Show a success message to your buyer
+                        alert('Transaction completed by ' + details.payer.name.given_name);
+                        // Call your server to save the transaction
+                        return fetch('/paypal-transaction-complete', {
+                            method: 'post',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                orderID: data.orderID
+                            })
+                        });
+                    });
+                } 
+            }).render('#paypal-button-container');
+        </script>
+
     </body>
 </html>
