@@ -15,13 +15,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/products', 'API\ProductController@index');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
-
-
 //GOOGLE AUTH
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
+
+Route::prefix('admin')->group(function () {
+
+});
