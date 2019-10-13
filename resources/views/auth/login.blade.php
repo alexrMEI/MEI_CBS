@@ -65,9 +65,11 @@
                             </div>
                         </div>
                     </form>
+                    <br>
+                    <div class="g-signin2" data-onsuccess="onSignIn" style="text-align: center;">
+                        <a class="btn btn-primary" href="{{ url('login/google') }}">Login with Google</a>
+                    </div>
                 </div>
-
-                <div class="g-signin2" data-onsuccess="{{ url('login/google') }}" data-theme="dark" style="text-align: center;"></div>
                 <!--<script>
                   function onSignIn(googleUser) {
                     // Useful data for your client-side scripts:

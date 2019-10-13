@@ -52,7 +52,7 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
     /**
@@ -62,7 +62,7 @@ class LoginController extends Controller
      */
     public function handleProviderCallback()
     {
-        $user = Socialite::driver('github')->user();
+        $user = Socialite::driver('google')->user();
         $authUser = $this->findOrCreate($user);
         Auth::login($user, true);
         return redirect($this->redirectTo);
