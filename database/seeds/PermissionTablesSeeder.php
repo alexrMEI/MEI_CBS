@@ -18,7 +18,7 @@ class PermissionTablesSeeder extends Seeder
 		$admin = Role::create(['name' => 'admin']);
 		$developer = Role::create(['name' => 'developer']);
 		$sales = Role::create(['name' => 'salesman']);
-		$sales = Role::create(['name' => 'client']);
+		$client = Role::create(['name' => 'client']);
 
 		$createUser = Permission::create(['name' => 'create user']);
 		$createUser->assignRole($admin);
