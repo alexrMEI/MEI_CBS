@@ -51,12 +51,12 @@ class PermissionTablesSeeder extends Seeder
 		$deleteFile = Permission::create(['name' => 'delete file']);
 		$deleteFile->assignRole($admin);
 
-		$admin1 = User::find(1);
-		$admin2 = User::find(2);
-		$admin3 = User::find(3);
-		$admin4 = User::find(4);
-		$developer = User::find(5);
-		$salesman = User::find(6);
+		$admin1 = User::where('username', '2190273')->first();
+		$admin2 = User::where('username', '2190278')->first();
+		$admin3 = User::where('username', '2190274')->first();
+		$admin4 = User::where('username', '2190275')->first();
+		$developer = User::where('username', 'dev')->first();
+		$salesman = User::where('username', 'salesman')->first();
 
 		$admin1->assignRole('admin');
 		$admin2->assignRole('admin');
