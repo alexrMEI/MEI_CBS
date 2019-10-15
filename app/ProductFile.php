@@ -13,6 +13,6 @@ class ProductFile extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'file_path', 'product_version', 'product_id',
+        'name', 'file', 'product_version', 'product_id',
     ];
 }
