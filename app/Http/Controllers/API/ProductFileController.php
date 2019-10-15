@@ -15,7 +15,7 @@ class ProductFileController extends Controller
      */
     public function index()
     {
-        return response()->json(ProductFile::all(), 200);
+        //
     }
 
     /**
@@ -36,11 +36,7 @@ class ProductFileController extends Controller
      */
     public function store(Request $request)
     {
-        $file = new ProductFile();
-        $file->fill($request->all());
-        $file->save();
-
-        return response(null, 200);
+        //
     }
 
     /**
@@ -74,10 +70,7 @@ class ProductFileController extends Controller
      */
     public function update(Request $request, ProductFile $file)
     {
-        $license->fill($request->all());
-        $license->save();
-
-        return response(null, 200);
+        //
     }
 
     /**
@@ -88,8 +81,6 @@ class ProductFileController extends Controller
      */
     public function destroy(ProductFile $file)
     {
-        $license->delete();
-
-        return response(null, 200);
+        //
     }
 }

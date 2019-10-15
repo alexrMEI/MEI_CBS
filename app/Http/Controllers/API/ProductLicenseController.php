@@ -15,7 +15,7 @@ class ProductLicenseController extends Controller
      */
     public function index()
     {
-        return response()->json(ProductLicense::all(), 200);
+        //
     }
 
     /**
@@ -36,11 +36,7 @@ class ProductLicenseController extends Controller
      */
     public function store(Request $request)
     {
-        $license = new ProductLicense();
-        $license->fill($request->all());
-        $license->save();
-
-        return response(null, 200);
+        //
     }
 
     /**
@@ -74,10 +70,7 @@ class ProductLicenseController extends Controller
      */
     public function update(Request $request, ProductLicense $license)
     {
-        $license->fill($request->all());
-        $license->save();
-
-        return response(null, 200);
+        //
     }
 
     /**
@@ -88,8 +81,6 @@ class ProductLicenseController extends Controller
      */
     public function destroy(ProductLicense $license)
     {
-        $license->delete();
-
-        return response(null, 200);
+        //
     }
 }

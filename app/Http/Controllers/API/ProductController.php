@@ -36,11 +36,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = new Product();
-        $product->fill($request->all());
-        $product->save();
-
-        return response(null, 200);
+        //
     }
 
     /**
@@ -74,10 +70,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $product->fill($request->all());
-        $product->save();
-
-        return response(null, 200);
+        //
     }
 
     /**
@@ -88,8 +81,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-
-        return response(null, 200);
+        //
     }
 }
