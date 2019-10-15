@@ -16,6 +16,9 @@
 
                     You are logged in!
                 </div>
+                <div>
+                    <button type="button" class="btn btn-success" onclick="location.href='{{ route('mailForm') }}'">Mail + Key</button>
+                </div>
             </div>
         </div>
     </div>
