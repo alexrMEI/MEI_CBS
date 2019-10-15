@@ -17,7 +17,7 @@ class CreateProductFilesTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('name', 191)->unique();
-            $table->binary('file')->unique();
+            $table->binary('file');
             $table->string('product_version', 191);
 
             $table->unsignedBigInteger('product_id');
