@@ -19,3 +19,26 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/mail', 'MailController@index')->name('mailForm');
+
+
+//GOOGLE AUTH
+Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider');
+Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
+
+// Products
+Route::get('/products', 'API\ProductController@index');
+
+// Shopping Cart
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/cart/add/{productId}', 'API\ShoppingCartController@addProduct')->name('add.to.cart');
+	Route::get('/cart/remove/{productId}', 'API\ShoppingCartController@removeProduct')->name('remove.from.cart');
+});
+
+Route::group(['middleware' => ['role:admin']], function () {
+});
+Route::group(['middleware' => ['role:admin|developer']], function () {
+});
+Route::group(['middleware' => ['role:admin|salesman']], function () {
+});
+Route::group(['middleware' => ['role:admin|client']], function () {
+});

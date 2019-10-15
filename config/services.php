@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_AUTH_KEY'),
+        'client_secret' => env('GOOGLE_AUTH_SECRET'),
+        'redirect' => 'https://meicmcbs.herokuapp.com/login/google/callback'
+    ]
+
 ];
