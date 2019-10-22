@@ -11,6 +11,8 @@ use App\Mail\OrderShipped;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth;
+use App\ProductLicense;
+use Carbon\Carbon;
 
 class MailController extends Controller
 {
@@ -33,7 +35,20 @@ class MailController extends Controller
     {
         //Mail::to("riky.rod@hotmail.com")->send(new OrderShipped);
         $user = \Auth::user();
+
+        $key = file_get_contents("https://www.uuidgenerator.net/api/version4");
+        
+        $currentDate = Carbon::now();
+        ProductLicense::create([
+            'key' => $key,
+            'expiration_date' => $currentDate->addMinutes(1),
+            'user_id' => $user->id,
+            'product_id' => '1'
+        ]);
+
         Mail::to($user)->send(new OrderShipped);
+
+        //dd($xml);
 
        /* $generateUUID = (new Provider())->withResource('generateUUIDs')
     ->withParameters(['n' => 1]);

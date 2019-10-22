@@ -17,7 +17,7 @@ class CreateProductLicensesTable extends Migration
             $table->bigIncrements('id');
 
             $table->string('key', 50)->unique();
-            $table->date('expiration_date');
+            $table->timestamp('expiration_date');
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

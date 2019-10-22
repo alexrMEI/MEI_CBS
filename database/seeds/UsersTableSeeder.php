@@ -41,6 +41,13 @@ class UsersTableSeeder extends Seeder
         ]);
 
         User::create([
+            'name' => 'Ricardo Rodrigues',
+            'username' => 'rikyr',
+            'email' => 'riky.rod@hotmail.com',
+            'password' => bcrypt('12345678'),
+        ]);
+
+        User::create([
             'name' => 'Developer',
             'username' => 'dev',
             'email' => 'dev@my.ipleiria.pt',
