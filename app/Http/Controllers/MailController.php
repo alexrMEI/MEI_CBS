@@ -35,14 +35,14 @@ class MailController extends Controller
         $user = \Auth::user();
         Mail::to($user)->send(new OrderShipped);
 
-        $generateUUID = (new Provider())->withResource('generateUUIDs')
+       /* $generateUUID = (new Provider())->withResource('generateUUIDs')
     ->withParameters(['n' => 1]);
 
         $result = (new RandomOrgAPI())
     ->withApiKey('d5b72aac-bebe-43ce-bff5-eb2a6e204ef9')
     ->getData($generateUUID);
 
-    //dd($result);
+    dd($result);*/
 
         return view('mailForm');
     }
