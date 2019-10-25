@@ -57,7 +57,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'mestrado.mei.cs@outlook.pt'),
-        'name' => env('MAIL_FROM_NAME', 'App Name'),
+        'name' => env('MAIL_FROM_NAME', 'Loja Online'),
     ],
 
     /*

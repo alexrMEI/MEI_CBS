@@ -12,14 +12,16 @@ class OrderShipped extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $key;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(String $key)
     {
-        //
+        $this->key = $key;
     }
 
     /**
@@ -29,6 +31,6 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.mail');
+        return $this->subject('Chave Adquirida')->view('emails.mail');
     }
 }

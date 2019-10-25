@@ -46,7 +46,7 @@ class MailController extends Controller
             'product_id' => '1'
         ]);
 
-        Mail::to($user)->send(new OrderShipped);
+        Mail::to($user)->send(new OrderShipped($key));
 
         //dd($xml);
 

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <title>App Name - @yield('title')</title>
+        <title>Loja Online - @yield('title')</title>
     </head>
     <body>
-        @section('sidebar')
-            This is the master sidebar.
-        @show
+        <div>
+            <p>Obrigado pela sua compra.</p>
+            <p>Para ativar o produto insira a seguinte chave:</p>
+            <p><strong>{{ $key }}</strong></p>
+        </div>
 
         <div class="container">
             @yield('content')
