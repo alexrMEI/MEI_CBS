@@ -44,4 +44,10 @@ class ShoppingCartController extends Controller
 
         return back();
     }
+
+    public function checkout(Request $request) {
+
+        $request = new OrdersCreateRequest();
+        $request->headers["prefer"] = "return=representation";        
+    }
 }

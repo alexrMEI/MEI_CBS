@@ -34,6 +34,8 @@ Route::group(['middleware' => ['web']], function () {
 	Route::get('/cart/remove/{productId}', 'API\ShoppingCartController@removeProduct')->name('remove.from.cart');
 });
 
+Route::post('/cart/checkout', 'PaypalController@payWithpaypal')->name('checkout.cart');
+
 Route::group(['middleware' => ['role:admin']], function () {
 });
 Route::group(['middleware' => ['role:admin|developer']], function () {

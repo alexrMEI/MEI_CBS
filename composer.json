@@ -17,6 +17,8 @@
         "laravel/tinker": "^1.0",
         "spatie/laravel-permission": "^3.0",
         "symfony/http-client": "^4.3"
+        "paypal/paypal-checkout-sdk": "1.0.0",
+        "paypal/rest-api-sdk-php": "^1.14"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

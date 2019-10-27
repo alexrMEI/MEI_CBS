@@ -38,7 +38,10 @@
                                         @endforeach
                                     @endif
                                 </ul>
-                                <a href="#" class="btn btn-primary mt-3">Checkout</a>
+                                <form class="w3-container w3-display-middle w3-card-4 w3-padding-16" method="POST" id="payment-form" action="{!! URL::to('cart/checkout') !!}">
+                                    {{ csrf_field() }}
+                                    <button class="btn btn-primary">Checkout</button>
+                                </form>
                             </div>
                         </div>
                     </div>
