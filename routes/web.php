@@ -37,6 +37,19 @@ Route::group(['middleware' => ['web']], function () {
 Route::post('/cart/checkout', 'PaypalController@payWithpaypal')->name('checkout.cart');
 
 Route::group(['middleware' => ['role:admin']], function () {
+	Route::get('/admin', 'AdminController@index')->name('admin');
+
+	Route::get('/admin/users', 'API\UserController@admin')->name('admin.users');
+	Route::get('/admin/users/{user}', 'AdminController@editUser')->name('admin.users.edit');
+	Route::post('/admin/users/update/{user}', 'AdminController@updateUser')->name('admin.users.update');
+
+	Route::get('/admin/products', 'API\ProductController@admin')->name('admin.products');
+
+	Route::get('/admin/files', 'API\ProductFileController@admin')->name('admin.files');
+
+	Route::get('/admin/licenses', 'API\ProductLicenseController@admin')->name('admin.licenses');
+
+	Route::get('/admin/authentication', 'AdminController@authentication')->name('admin.authentication');
 });
 Route::group(['middleware' => ['role:admin|developer']], function () {
 });

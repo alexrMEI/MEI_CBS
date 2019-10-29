@@ -19,6 +19,16 @@ class ProductFileController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function admin()
+    {
+        return view('admin.files.list')->with('files', ProductFile::all());
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

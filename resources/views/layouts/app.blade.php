@@ -9,18 +9,25 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ secure_asset('js/app.js') }}" defer></script>
-    <script src="{{ secure_asset('js/custom.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-    <!-- Styles -->
-    <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ secure_asset('css/custom.css') }}" rel="stylesheet">
+    <!-- Local
+    -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/custom.js') }}" defer></script>
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+
+    <!-- Server
+        <script src="{{ secure_asset('js/app.js') }}" defer></script>
+        <script src="{{ secure_asset('js/custom.js') }}" defer></script>
+        <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ secure_asset('css/custom.css') }}" rel="stylesheet">
+    -->
 
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="701642659233-gvflkbfd62kaerkkv4m50jnqdnmrq6p9.apps.googleusercontent.com">

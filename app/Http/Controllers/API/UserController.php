@@ -19,6 +19,17 @@ class UserController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function admin()
+    {
+        $users = User::all();
+        return view('admin.users.list')->with('users', $users);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -65,7 +76,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $user->load('roles');
+        return view('admin.users.edit')->with('user', $user);
     }
 
     /**
