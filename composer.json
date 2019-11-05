@@ -12,13 +12,16 @@
         "drupol/yaroc": "^2.1",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
+        "kriswallsmith/buzz": "^1.0",
         "laravel/framework": "^6.0",
         "laravel/socialite": "^4.2",
         "laravel/tinker": "^1.0",
-        "spatie/laravel-permission": "^3.0",
-        "symfony/http-client": "^4.3",
+        "mailgun/mailgun-php": "^3.0",
+        "nyholm/psr7": "^1.2",
         "paypal/paypal-checkout-sdk": "1.0.0",
-        "paypal/rest-api-sdk-php": "^1.14"
+        "paypal/rest-api-sdk-php": "^1.14",
+        "spatie/laravel-permission": "^3.0",
+        "symfony/http-client": "^4.3"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

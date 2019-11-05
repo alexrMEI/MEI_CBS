@@ -14,6 +14,11 @@ use Illuminate\Foundation\Auth;
 use App\ProductLicense;
 use Carbon\Carbon;
 
+//require 'PHPMailerAutoload.php';
+
+require '../vendor/autoload.php';
+use Mailgun\Mailgun;
+
 class MailController extends Controller
 {
     /**
@@ -36,6 +41,32 @@ class MailController extends Controller
         //Mail::to("riky.rod@hotmail.com")->send(new OrderShipped);
         $user = \Auth::user();
 
+        /* --- Upgrade needed to use this ---
+        # Validate Email
+        $mgClient = new Mailgun('pubkey-f2ec547890fcf46e4bd6a253f926f8b5'); // try Private Key
+        $validateAddress = 'foo@mailgun.net';
+
+        # Issue the call to the client.
+        $result = $mgClient->get("address/validate", array('address' => $validateAddress));
+        # is_valid is 0 or 1
+        $isValid = $result->http_response_body->is_valid;
+        */
+
+        // Check if Mail was deliveres with success
+        //$mgClient = new Mailgun('pubkey-f2ec547890fcf46e4bd6a253f926f8b5');
+        /*$mgClient = Mailgun::create('pubkey-f2ec547890fcf46e4bd6a253f926f8b5', 'https://api.eu.mailgun.net');
+        $domain = env('MAILGUN_DOMAIN');
+        $queryString = array(
+            'begin'        => 'Fri, 3 May 2013 09:00:00 -0000',
+            'ascending'    => 'yes',
+            'limit'        =>  25,
+            'pretty'       => 'yes'
+        );
+
+        # Make the call to the client.
+        $result = $mgClient->get("$domain/events", $queryString);
+        dd($result);*/
+
         $key = file_get_contents("https://www.uuidgenerator.net/api/version4");
         
         $currentDate = Carbon::now();
@@ -46,19 +77,25 @@ class MailController extends Controller
             'product_id' => '1'
         ]);
 
-        Mail::to($user)->send(new OrderShipped($key));
+        $mgClient = Mailgun::create(env('MAILGUN_API_KEY'));
+        $mgClient->SMTPSecure = 'tls'; 
+        $mgClient->messages()->send(env('MAILGUN_API_DOMAIN'), [
+          'from'    => 'Loja Online<'.env('MAILGUN_EMAIL').'>',
+          'to'      => $user->email,
+          'subject' => 'Chave Adquirida',
+          'html'    => '<p>Obrigado pela sua compra.</p><p>Para ativar o produto insira a seguinte chave:</p><p><strong>' . $key . '</strong></p>',
+          'o:require-tls'   => 'true'
+        ]);
 
-        //dd($xml);
+        // OU
 
-       /* $generateUUID = (new Provider())->withResource('generateUUIDs')
-    ->withParameters(['n' => 1]);
-
-        $result = (new RandomOrgAPI())
-    ->withApiKey('d5b72aac-bebe-43ce-bff5-eb2a6e204ef9')
-    ->getData($generateUUID);
-
-    dd($result);*/
+        //Mail::to($user)->send(new OrderShipped($key));
 
         return view('mailForm');
+    }
+
+    public function ValidateEmail($value='')
+    {
+        # code...
     }
 }

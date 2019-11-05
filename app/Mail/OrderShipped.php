@@ -31,6 +31,6 @@ class OrderShipped extends Mailable
      */
     public function build()
     {
-        return $this->subject('Chave Adquirida')->view('emails.mail');
+        return $this->subject('Chave Adquirida')->SMTPSecure ('tls')->view('emails.mail');
     }
 }
