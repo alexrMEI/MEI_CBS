@@ -79,7 +79,7 @@ class MailController extends Controller
 
         $mgClient = Mailgun::create(env('MAILGUN_API_KEY'));
         $mgClient->SMTPSecure = 'tls'; 
-        $mgClient->messages()->send(env('MAILGUN_API_DOMAIN'), [
+        $res = $mgClient->messages()->send(env('MAILGUN_API_DOMAIN'), [
           'from'    => 'Loja Online<'.env('MAILGUN_EMAIL').'>',
           'to'      => $user->email,
           'subject' => 'Chave Adquirida',
@@ -87,6 +87,13 @@ class MailController extends Controller
           'o:require-tls'   => 'true'
         ]);
 
+/*
+        if(!$res) {
+            dd("Email to " . $user->email . " with the key " . $key . " cannot be sent");
+        } else {
+            dd("Email to " . $user->email . " with the key " . $key . " has been sent");
+        }
+*/
         // OU
 
         //Mail::to($user)->send(new OrderShipped($key));
