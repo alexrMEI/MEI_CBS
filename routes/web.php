@@ -1,5 +1,7 @@
 <?php
 
+use App\Product;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +14,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome'); 
+	$products = Product::All();
+    return view('welcome', compact('products')); 
 });
 
 Auth::routes();

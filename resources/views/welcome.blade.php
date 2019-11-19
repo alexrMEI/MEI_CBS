@@ -1,129 +1,91 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Licenças</title>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+    <title>{{ config('app.name', 'Licenças') }}</title>
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/custom.js') }}" defer></script>
 
-            .full-height {
-                height: 100vh;
-            }
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
-            .position-ref {
-                position: relative;
-            }
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="701642659233-gvflkbfd62kaerkkv4m50jnqdnmrq6p9.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=Af9Cqta-_ZlnJTDIlKBToAGM5etqil_7O1khFrtq1iVwMezOsT9Khn4tFiNwDGr9aSoov6He0JDsx8lh&currency=EUR"></script>
 
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
+</head>
+<body>
 
-            .content {
-                text-align: center;
-            }
+    @include('partials.navbar')
 
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
+    <div class="container">
+        <div class="row justify-content-between">
+            @foreach ($products as $product)
+                <div class="card" style="width: 18rem; margin: 20px">
+                    <img src="{{ asset('storage/product-default.jpg') }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $product->name }}</h5>
+                        <p class="card-text">{{ $product->description }}</p>
+                        <p id="price" class="card-text">{{ $product->price }}</p>
+                        <a href="{{ route('add.to.cart', $product->id) }}" class="btn btn-primary">Add to cart</a>
+                        @guest
+                        @else
+                        <div id="paypal-button-container"></div>
+                        @endguest
+                    </div>
                 </div>
-            @endif
-
-            <div class="content">
-                
-                <!-- PAYPAL -->
-                    <div id="paypal-button-container"></div>
-                <!-- END PAYPAL -->
-
-            </div>
+            @endforeach
         </div>
+    </div>
 
-        <script
-            src="https://www.paypal.com/sdk/js?client-id=Af9Cqta-_ZlnJTDIlKBToAGM5etqil_7O1khFrtq1iVwMezOsT9Khn4tFiNwDGr9aSoov6He0JDsx8lh&currency=EUR">
-        </script>
-
-        <script>
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    // Set up the transaction
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: '0.01',
-                            }
-                        }]
+    <script>
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                price = document.getElementById('price').innerHTML;
+                // Set up the transaction
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            //value: '0.01',
+                            value: price,
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                // Capture the funds from the transaction
+                return actions.order.capture().then(function(details) {
+                    // Show a success message to your buyer
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                    // Call your server to save the transaction
+                    return fetch('/paypal-transaction-complete', {
+                        method: 'post',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderID: data.orderID
+                        })
                     });
-                },
-                onApprove: function(data, actions) {
-                    // Capture the funds from the transaction
-                    return actions.order.capture().then(function(details) {
-                        // Show a success message to your buyer
-                        alert('Transaction completed by ' + details.payer.name.given_name);
-                        // Call your server to save the transaction
-                        return fetch('/paypal-transaction-complete', {
-                            method: 'post',
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                orderID: data.orderID
-                            })
-                        });
-                    });
-                } 
-            }).render('#paypal-button-container');
-        </script>
+                });
+            } 
+        }).render('#paypal-button-container');
+    </script>
 
-    </body>
+</body>
 </html>

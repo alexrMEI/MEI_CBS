@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Licenças') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -17,6 +17,7 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -29,26 +30,6 @@
 </head>
 <body>
     <div id="app">
-
-      <div class="w3-container">
-        @if ($message = Session::get('success'))
-        <div class="w3-panel w3-green w3-display-container">
-            <span onclick="this.parentElement.style.display='none'"
-            class="w3-button w3-green w3-large w3-display-topright">&times;</span>
-            <p>{!! $message !!}</p>
-        </div>
-        <?php Session::forget('success');?>
-        @endif
-
-        @if ($message = Session::get('error'))
-        <div class="w3-panel w3-red w3-display-container">
-            <span onclick="this.parentElement.style.display='none'"
-            class="w3-button w3-red w3-large w3-display-topright">&times;</span>
-            <p>{!! $message !!}</p>
-        </div>
-        <?php Session::forget('error');?>
-        @endif
-      </div>
 
       @include('partials.navbar')
 
