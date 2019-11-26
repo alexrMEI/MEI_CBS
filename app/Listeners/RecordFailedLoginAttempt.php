@@ -37,10 +37,13 @@ class RecordFailedLoginAttempt
 
         $counter = 0;
 
-        $userAttempts = FailedLoginAttempt::where('user_id', $event->user->id)->orderBy('created_at', 'desc')->take(3)->get();
+        if ($event->user != NULL) {
+            $userAttempts = FailedLoginAttempt::where('user_id', $event->user->id)->orderBy('created_at', 'desc')->take(3)->get();
 
-        $lastFailedAttempt = $userAttempts->last()->created_at;
+            $lastFailedAttempt = $userAttempts->last()->created_at;
+        }
 
+        
         // Replace with notification/alert in the system
         /*
         if ($lastFailedAttempt->gt(Carbon::now()->subMinutes(15))) {
