@@ -42,6 +42,7 @@ class MailController extends Controller
         $user = \Auth::user();
 
         $key = file_get_contents("https://www.uuidgenerator.net/api/version4");
+        $key=str_replace("\r\n","",$key);
         
         $currentDate = Carbon::now();
         ProductLicense::create([
