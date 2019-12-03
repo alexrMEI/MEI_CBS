@@ -41,32 +41,6 @@ class MailController extends Controller
         //Mail::to("riky.rod@hotmail.com")->send(new OrderShipped);
         $user = \Auth::user();
 
-        /* --- Upgrade needed to use this ---
-        # Validate Email
-        $mgClient = new Mailgun('pubkey-f2ec547890fcf46e4bd6a253f926f8b5'); // try Private Key
-        $validateAddress = 'foo@mailgun.net';
-
-        # Issue the call to the client.
-        $result = $mgClient->get("address/validate", array('address' => $validateAddress));
-        # is_valid is 0 or 1
-        $isValid = $result->http_response_body->is_valid;
-        */
-
-        // Check if Mail was deliveres with success
-        //$mgClient = new Mailgun('pubkey-f2ec547890fcf46e4bd6a253f926f8b5');
-        /*$mgClient = Mailgun::create('pubkey-f2ec547890fcf46e4bd6a253f926f8b5', 'https://api.eu.mailgun.net');
-        $domain = env('MAILGUN_DOMAIN');
-        $queryString = array(
-            'begin'        => 'Fri, 3 May 2013 09:00:00 -0000',
-            'ascending'    => 'yes',
-            'limit'        =>  25,
-            'pretty'       => 'yes'
-        );
-
-        # Make the call to the client.
-        $result = $mgClient->get("$domain/events", $queryString);
-        dd($result);*/
-
         $key = file_get_contents("https://www.uuidgenerator.net/api/version4");
         
         $currentDate = Carbon::now();
@@ -87,13 +61,12 @@ class MailController extends Controller
           'o:require-tls'   => 'true'
         ]);
 
-/*
         if(!$res) {
-            dd("Email to " . $user->email . " with the key " . $key . " cannot be sent");
+            \Log::info("Email to " . $user->email . " with the key " . $key . " cannot be sent");
         } else {
-            dd("Email to " . $user->email . " with the key " . $key . " has been sent");
+            \Log::info("Email to " . $user->email . " with the key " . $key . " has been sent");
         }
-*/
+
         // OU
 
         //Mail::to($user)->send(new OrderShipped($key));
