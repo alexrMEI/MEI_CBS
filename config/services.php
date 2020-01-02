@@ -33,7 +33,7 @@ return [
     'google' => [
         'client_id' => env('GOOGLE_AUTH_KEY'),
         'client_secret' => env('GOOGLE_AUTH_SECRET'),
-        'redirect' => 'https://ciberseguranca.me:4001/login/google/callback'
+        'redirect' => 'https://ciberseguranca.me/login/google/callback'
     ]
 
 ];
