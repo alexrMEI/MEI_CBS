@@ -26,6 +26,21 @@ Use Request;
 use Auth;
 use Config;
 
+use drupol\Yaroc\RandomOrgAPI;
+use drupol\Yaroc\Plugin\Provider;
+
+use App\User;
+use App\ProductLicense;
+use App\Mail\OrderShipped;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
+//require 'PHPMailerAutoload.php';
+
+require '../vendor/autoload.php';
+use Mailgun\Mailgun;
+
 class PaypalController extends Controller
 {
     private $apiContext;
@@ -121,6 +136,8 @@ class PaypalController extends Controller
 
     public function getPaymentStatus()
     {
+        $user = Auth::user();
+
         $paymentId = Session::get('paypalPaymentId');
         $orderId = Session::get('orderId');
 
@@ -155,6 +172,7 @@ class PaypalController extends Controller
                 $suborder->order_id = $orderId;
                 $suborder->product_id = $item->id;
                 $suborder->save();
+                $this->sendEmailWithKey($user, $item);
             }
 
             Cart::destroy();
@@ -165,5 +183,36 @@ class PaypalController extends Controller
 
         Session::put('error', 'There was a problem processing your payment. Please contact support.');
         return Redirect::to('/home');
+    }
+
+    public function sendEmailWithKey($user, $product) {
+        $key = file_get_contents("https://www.uuidgenerator.net/api/version4");
+        $key = str_replace("\r\n","",$key);
+        
+        $currentDate = Carbon::now();
+        ProductLicense::create([
+            'key' => $key,
+            'expiration_date' => $currentDate->addMinutes(1),
+            'user_id' => $user->id,
+            'product_id' => $product->id
+        ]);
+
+        $mgClient = Mailgun::create(env('MAILGUN_API_KEY'));
+        $mgClient->SMTPSecure = 'tls'; 
+        $res = $mgClient->messages()->send(env('MAILGUN_API_DOMAIN'), [
+          'from'    => 'Loja Online<'.env('MAILGUN_EMAIL').'>',
+          'to'      => $user->email,
+          'subject' => 'Chave Adquirida',
+          'html'    => '<p>Obrigado pela sua compra.</p><p>Para ativar o produto ' . $product->name . ' insira a seguinte chave:</p><p><strong>' . $key . '</strong></p>',
+          'o:require-tls'   => 'true'
+        ]);
+
+        if(!$res) {
+            \Log::info("Email to " . $user->email . " with the key " . $key . " cannot be sent");
+        } else {
+            \Log::info("Email to " . $user->email . " with the key " . $key . " has been sent");
+        }
+
+        return view('mailForm');
     }
 }
