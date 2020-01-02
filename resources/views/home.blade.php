@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">Welcome!</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -13,8 +13,9 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+                    <a href="{{ url('/products') }}">
+                        Check out our products
+                    </a>
                 </div>
                 <div>
                     <button type="button" class="btn btn-success" onclick="location.href='{{ route('mailForm') }}'">Mail + Key</button>

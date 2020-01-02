@@ -33,7 +33,26 @@
 
       @include('partials.navbar')
 
-      <main class="py-4">            
+      <div class="container my-4">
+        @if(Session::has('success'))
+            <div class="alert alert-success">
+                {{ Session::get('success') }}
+                @php
+                    Session::forget('success');
+                @endphp
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-warning" uk-alert>
+                {{ Session::get('error') }}
+                @php
+                    Session::forget('error');
+                @endphp
+            </div>
+        @endif
+      </div>
+      <main class="py-4">
           @yield('content')            
       </main>
     </div>    

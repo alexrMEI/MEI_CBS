@@ -10,7 +10,6 @@
     <title>{{ config('app.name', 'Licenças') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/custom.js') }}" defer></script>
 
     <!-- Fonts -->
@@ -33,59 +32,20 @@
 
     @include('partials.navbar')
 
-    <div class="container">
+    <div class="container" id="app">
         <div class="row justify-content-between">
+            <h2>Our products</h2>
             @foreach ($products as $product)
                 <div class="card" style="width: 18rem; margin: 20px">
-                    <img src="{{ asset('storage/product-default.jpg') }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ $product->name }}</h5>
                         <p class="card-text">{{ $product->description }}</p>
                         <p id="price" class="card-text">{{ $product->price }}</p>
                         <a href="{{ route('add.to.cart', $product->id) }}" class="btn btn-primary">Add to cart</a>
-                        @guest
-                        @else
-                        <div id="paypal-button-container"></div>
-                        @endguest
                     </div>
                 </div>
             @endforeach
         </div>
     </div>
-
-    <script>
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                price = document.getElementById('price').innerHTML;
-                // Set up the transaction
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            //value: '0.01',
-                            value: price,
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                // Capture the funds from the transaction
-                return actions.order.capture().then(function(details) {
-                    // Show a success message to your buyer
-                    alert('Transaction completed by ' + details.payer.name.given_name);
-                    // Call your server to save the transaction
-                    return fetch('/paypal-transaction-complete', {
-                        method: 'post',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            orderID: data.orderID
-                        })
-                    });
-                });
-            } 
-        }).render('#paypal-button-container');
-    </script>
-
 </body>
 </html>

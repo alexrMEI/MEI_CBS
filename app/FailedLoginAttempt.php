@@ -9,7 +9,7 @@ class FailedLoginAttempt extends Model
     protected $fillable = [
         'user_id', 'email_address', 'ip_address',
     ];
-    
+
     public static function record($user = null, $email, $ip)
     {
         return static::create([

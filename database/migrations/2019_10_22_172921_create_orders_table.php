@@ -18,9 +18,16 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->double('total_price', 10, 2);
-            $table->unsignedBigInteger('product_id');
-            $table->foreign('product_id')->references('id')->on('products');
+
+            $table->string('status');
+            $table->string('customer_id')->nullable();
+            $table->string('customer_email')->nullable();
+            $table->string('country_code')->nullable();
+            $table->string('payment_id')->nullable();
+            $table->string('payment_status')->nullable();
+            $table->string('currency')->nullable();
+            $table->double('price', 2)->nullable();
+
             $table->timestamps();
         });
     }
