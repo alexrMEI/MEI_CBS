@@ -18,30 +18,61 @@
             </ul>
 
             <!-- Right Side Of Navbar -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item" style="position: relative;">
-                    <a id="cart-button" class="nav-link" onclick="toggleCart()" onmouseover="openCart()" onmouseout="closeCart()">
-                        <i class="material-icons">shopping_cart</i>
-                    </a>
-                    <div id="cart" class="card cart" onmouseover="openCart()" onmouseout="closeCart()">
-                        <div class="card-body">
-                            <h5 class="card-title">Shopping Cart</h5>
-                            <div class="container-fluid d-flex flex-column flex-wrap justify-content-center">
-                                <ul class="list-group">
-                                    @if($cartProducts)
-                                        @foreach ($cartProducts as $product)
-                                            <li class="list-group-item">
-                                                <p class="card-text">{{ $product->name }}</p>
-                                                <p class="card-text">{{ $product->price }}</p>
-                                                <a href="{{ route('remove.from.cart', $product->id) }}" class="btn btn-primary">Remove</a>
-                                            </li>
+            <ul class="navbar-nav ml-auto" style="align-items: center;">
+                <li class="nav-item" style="position: relative; height: max-content;">
+                    <i class="material-icons" data-toggle="modal" data-target="#shoppingCartModal" style="cursor: pointer;">shopping_cart</i>
+                    <!-- Shopping cart modal -->
+                    <div class="modal fade" id="shoppingCartModal" tabindex="-1" role="dialog"
+                         aria-labelledby="shoppingCartModalTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="shoppingCartModalTitle">Shopping cart</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach(Cart::content() as $cartItem)
+                                            <tr>
+                                                <td>
+                                                    <!-- Remove product button -->
+                                                    <a href="{{ route('remove', [ $cartItem->rowId ]) }}">x</a>
+                                                </td>
+                                                <td>{{ $cartItem->name }}</td>
+                                                <td>{{ $cartItem->qty }}</td>
+                                                <td>{{ $cartItem->price }} USD</td>
+                                                <td>{{ number_format($cartItem->total, 2) }} USD</td>
+                                            </tr>
                                         @endforeach
-                                    @endif
-                                </ul>
-                                <form class="w3-container w3-display-middle w3-card-4 w3-padding-16" method="POST" id="payment-form" action="{!! URL::to('cart/checkout') !!}">
-                                    {{ csrf_field() }}
-                                    <button class="btn btn-primary">Checkout</button>
-                                </form>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <!-- Total price of whole cart -->
+                                            <td class="uk-text-bold">Total: {{ number_format(Cart::subtotal(), 2) }} USD</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- Clear shopping cart button -->
+                                    <a href="{{ route('empty') }}" class="btn btn-danger">Empty</a>
+                                    <!-- Proceed to checkout button -->
+                                    <a href="{{ route('checkout') }}" class="btn btn-primary">Checkout</a>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -9,8 +9,10 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "bumbummen99/shoppingcart": "^2.8",
         "drupol/yaroc": "^2.1",
         "fideloper/proxy": "^4.0",
+        "graylog2/gelf-php": "^1.6",
         "guzzlehttp/guzzle": "^6.3",
         "kriswallsmith/buzz": "^1.0",
         "laravel/framework": "^6.0",

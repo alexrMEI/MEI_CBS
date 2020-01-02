@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Input;
 use PayPal\Api\Amount;
-use PayPal\Api\Details;
 use PayPal\Api\Item;
-/** All Paypal Details class **/
+use PayPal\Api\WebProfile;
 use PayPal\Api\ItemList;
+use PayPal\Api\InputFields;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
 use PayPal\Api\PaymentExecution;
@@ -19,112 +19,200 @@ use PayPal\Rest\ApiContext;
 use Redirect;
 use Session;
 use URL;
+use App\Order;
+use App\Suborder;
+use Str;
+Use Request;
+use Auth;
+use Config;
+
+use drupol\Yaroc\RandomOrgAPI;
+use drupol\Yaroc\Plugin\Provider;
+
+use App\User;
+use App\ProductLicense;
+use App\Mail\OrderShipped;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
+
+//require 'PHPMailerAutoload.php';
+
+require '../vendor/autoload.php';
+use Mailgun\Mailgun;
 
 class PaypalController extends Controller
 {
-    public function __construct() { 
-        /** PayPal api context **/
-        $paypal_conf = \Config::get('paypal');
-        $this->_api_context = new ApiContext(new OAuthTokenCredential(
-            $paypal_conf['client_id'],
-            $paypal_conf['secret'])
+    private $apiContext;
+
+    public function __construct()
+    {
+        $paypalConfig = Config::get('paypal');
+        $this->apiContext = new ApiContext(new OAuthTokenCredential(
+                $paypalConfig['client_id'],
+                $paypalConfig['secret'])
         );
-        $this->_api_context->setConfig($paypal_conf['settings']); 
+        $this->apiContext->setConfig($paypalConfig['settings']);
     }
 
-    public function payWithpaypal(Request $request) {
- 
+    public function index()
+    {
+        return view('products');
+    }
+
+    public function payWithpaypal(Request $request)
+    {
+
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');
- 
-        $item_1 = new Item();
- 
-        $item_1->setName('Item 1') /** item name **/
-            ->setCurrency('EUR')
-            ->setQuantity(1)
-            //->setPrice($request->get('amount')); /** unit price **/
-            ->setPrice(50); /** unit price **/
- 
-        $item_list = new ItemList();
-        $item_list->setItems(array($item_1));
- 
+
+        $order = new Order();
+        $order->user_id = Auth::user()->id;
+        $order->status = 'initialised';
+        $order->save();
+
+        Session::put('orderId', $order->getKey());
+
+        $items = [];
+        foreach (Cart::content() as $item) {
+            $items[] = (new Item())
+                ->setName($item->name)
+                ->setCurrency('USD')
+                ->setQuantity(1)
+                ->setPrice($item->price);
+        }
+
+        $itemList = new ItemList();
+        $itemList->setItems($items);
+
+        $inputFields = new InputFields();
+        $inputFields->setAllowNote(true)
+            ->setNoShipping(1)
+            ->setAddressOverride(0);
+
+        $webProfile = new WebProfile();
+        $webProfile->setName(uniqid())
+            ->setInputFields($inputFields)
+            ->setTemporary(true);
+        $createProfile = $webProfile->create($this->apiContext);
+
         $amount = new Amount();
-        $amount->setCurrency('EUR')
-            //->setTotal($request->get('amount'));
-        	->setTotal(50);
- 
+        $amount->setCurrency('USD')
+            ->setTotal(Cart::subtotal());
+
         $transaction = new Transaction();
-        $transaction->setAmount($amount)
-            ->setItemList($item_list)
+        $transaction->setAmount($amount);
+        $transaction->setItemList($itemList)
             ->setDescription('Your transaction description');
- 
-        $redirect_urls = new RedirectUrls();
-        $redirect_urls->setReturnUrl(URL::route('home')) /** Specify return URL **/
-            ->setCancelUrl(URL::route('home'));
- 
+
+        $redirectURLs = new RedirectUrls();
+        $redirectURLs->setReturnUrl(URL::to('status'))
+            ->setCancelUrl(URL::to('status'));
+
         $payment = new Payment();
         $payment->setIntent('Sale')
             ->setPayer($payer)
-            ->setRedirectUrls($redirect_urls)
+            ->setRedirectUrls($redirectURLs)
             ->setTransactions(array($transaction));
-        /** dd($payment->create($this->_api_context));exit; **/
-        try { 
-            $payment->create($this->_api_context); 
-        } catch (\PayPal\Exception\PPConnectionException $ex) {
- 
-            if (\Config::get('app.debug')) { 
-                \Session::put('error', 'Connection timeout');
-                return Redirect::route('home'); 
-            } else { 
-                \Session::put('error', 'Some error occur, sorry for inconvenient');
-                return Redirect::route('home'); 
-            } 
+        $payment->setExperienceProfileId($createProfile->getId());
+        $payment->create($this->apiContext);
+
+        foreach ($payment->getLinks() as $link) {
+            if ($link->getRel() == 'approval_url') {
+                $redirectURL = $link->getHref();
+                break;
+            }
         }
- 
-        foreach ($payment->getLinks() as $link) { 
-            if ($link->getRel() == 'approval_url') { 
-                $redirect_url = $link->getHref();
-                break; 
-            } 
+
+        Session::put('paypalPaymentId', $payment->getId());
+        if (isset($redirectURL)) {
+            return Redirect::away($redirectURL);
         }
- 
-        /** add payment ID to session **/
-        Session::put('paypal_payment_id', $payment->getId());
- 
-        if (isset($redirect_url)) { 
-            /** redirect to paypal **/
-            return Redirect::away($redirect_url); 
-        }
- 
-        \Session::put('error', 'Unknown error occurred');
-        return back();
-        //return Redirect::route('paywithpaypal'); 
+
+        Session::put('error', 'There was a problem processing your payment. Please contact support.');
+
+        return Redirect::to('/home');
     }
 
-    public function getPaymentStatus(){
-        /** Get the payment ID before session clear **/
-        $payment_id = Session::get('paypal_payment_id');
- 
-        /** clear the session payment ID **/
-        Session::forget('paypal_payment_id');
-        if (empty(Input::get('PayerID')) || empty(Input::get('token'))) { 
-            \Session::put('error', 'Payment failed');
-            return Redirect::route('/'); 
+    public function getPaymentStatus()
+    {
+        $user = Auth::user();
+
+        $paymentId = Session::get('paypalPaymentId');
+        $orderId = Session::get('orderId');
+
+        Session::forget('paypalPaymentId');
+
+        if (empty(Request::get('PayerID')) || empty(Request::get('token'))) {
+            Session::put('error', 'There was a problem processing your payment. Please contact support.');
+            return Redirect::to('/home');
         }
- 
-        $payment = Payment::get($payment_id, $this->_api_context);
+
+        $payment = Payment::get($paymentId, $this->apiContext);
         $execution = new PaymentExecution();
-        $execution->setPayerId(Input::get('PayerID'));
- 
-        /**Execute the payment **/
-        $result = $payment->execute($execution, $this->_api_context);
- 
-        if ($result->getState() == 'approved') { 
-            \Session::put('success', 'Payment success');
-            return Redirect::route('/'); 
+        $execution->setPayerId(Request::get('PayerID'));
+        $result = $payment->execute($execution, $this->apiContext);
+
+        $order = Order::find($orderId);
+        $order->status = 'processing';
+
+        if ($result->getState() == 'approved') {
+            $order->price = $result->transactions[0]->getAmount()->getTotal();
+            $order->currency = $result->transactions[0]->getAmount()->getCurrency();
+            $order->customer_email = $result->getPayer()->getPayerInfo()->getEmail();
+            $order->customer_id = $result->getPayer()->getPayerInfo()->getPayerId();
+            $order->country_code = $result->getPayer()->getPayerInfo()->getCountryCode();
+            $order->payment_id = $result->getId();
+            $order->payment_status = 'approved';
+            $order->status = 'ok';
+            $order->save();
+
+            foreach (Cart::content() as $item) {
+                $suborder = new Suborder();
+                $suborder->order_id = $orderId;
+                $suborder->product_id = $item->id;
+                $suborder->save();
+                $this->sendEmailWithKey($user, $item);
+            }
+
+            Cart::destroy();
+            Session::put('success', 'Your payment was successful. Thank you.');
+
+            return Redirect::to('/home');
         }
- 
-        \Session::put('error', 'Payment failed');
-        return Redirect::route('/'); 
+
+        Session::put('error', 'There was a problem processing your payment. Please contact support.');
+        return Redirect::to('/home');
+    }
+
+    public function sendEmailWithKey($user, $product) {
+        $key = file_get_contents("https://www.uuidgenerator.net/api/version4");
+        $key = str_replace("\r\n","",$key);
+        
+        $currentDate = Carbon::now();
+        ProductLicense::create([
+            'key' => $key,
+            'expiration_date' => $currentDate->addMinutes(1),
+            'user_id' => $user->id,
+            'product_id' => $product->id
+        ]);
+
+        $mgClient = Mailgun::create(env('MAILGUN_API_KEY'));
+        $mgClient->SMTPSecure = 'tls'; 
+        $res = $mgClient->messages()->send(env('MAILGUN_API_DOMAIN'), [
+          'from'    => 'Loja Online<'.env('MAILGUN_EMAIL').'>',
+          'to'      => $user->email,
+          'subject' => 'Chave Adquirida',
+          'html'    => '<p>Obrigado pela sua compra.</p><p>Para ativar o produto ' . $product->name . ' insira a seguinte chave:</p><p><strong>' . $key . '</strong></p>',
+          'o:require-tls'   => 'true'
+        ]);
+
+        if(!$res) {
+            \Log::info("Email to " . $user->email . " with the key " . $key . " cannot be sent");
+        } else {
+            \Log::info("Email to " . $user->email . " with the key " . $key . " has been sent");
+        }
+
+        return view('mailForm');
     }
 }

@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+
+Route::get('paypal/create-payment', 'PaypalController@createPayment')->name('checkout.cart');
+Route::get('paypal/execute-payment', 'PaypalController@getPaymentStatus')->name('checkout.cart');
+
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/
