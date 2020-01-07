@@ -38,9 +38,7 @@
                                         <tr>
                                             <th></th>
                                             <th>Product</th>
-                                            <th>Quantity</th>
                                             <th>Price</th>
-                                            <th>Total</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -51,21 +49,12 @@
                                                     <a href="{{ route('remove', [ $cartItem->rowId ]) }}">x</a>
                                                 </td>
                                                 <td>{{ $cartItem->name }}</td>
-                                                <td>{{ $cartItem->qty }}</td>
                                                 <td>{{ $cartItem->price }} USD</td>
-                                                <td>{{ number_format($cartItem->total, 2) }} USD</td>
                                             </tr>
                                         @endforeach
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <!-- Total price of whole cart -->
-                                            <td class="uk-text-bold">Total: {{ number_format(Cart::subtotal(), 2) }} USD</td>
-                                        </tr>
                                         </tbody>
                                     </table>
+                                    <p class="uk-text-bold">Total: {{ number_format(Cart::subtotal(), 2) }} USD</p>
                                 </div>
                                 <div class="modal-footer">
                                     <!-- Clear shopping cart button -->
