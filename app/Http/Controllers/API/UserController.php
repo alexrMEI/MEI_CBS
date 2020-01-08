@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function log()
+    {
+        Log::channel('mailgun')->error('[2020-01-08 17:53:09] local.ERROR: Email not sent to the user.');
+        Log::channel('google-auth')->error('[2020-01-08 17:53:09] local.ERROR: [2020-01-08 17:53:09] local.ERROR: User failed to login using google auth. Connection timeout.');
+        Log::channel('local-auth')->error('[2020-01-08 17:53:09] local.ERROR: User login failed 3 times in the past 15 minutes, ip: 194.210.216.130; First Attempt: 2020-01-08 17:03:38');
+        return response()->json('success', 200);
+    }
+
     /**
      * Display a listing of the resource.
      *

@@ -41,6 +41,8 @@ use Carbon\Carbon;
 require '../vendor/autoload.php';
 use Mailgun\Mailgun;
 
+use Illuminate\Support\Facades\Log;
+
 class PaypalController extends Controller
 {
     private $apiContext;
@@ -208,9 +210,9 @@ class PaypalController extends Controller
         ]);
 
         if(!$res) {
-            \Log::info("Email to " . $user->email . " with the key " . $key . " cannot be sent");
+            Log::channel('mailgun')->error("[user]:" . $user->email . ";[product]:" . $product->id . ";[key]:" . $key . ";[error]:failed to send email;");
         } else {
-            \Log::info("Email to " . $user->email . " with the key " . $key . " has been sent");
+            Log::channel('mailgun')->error("[user]:" . $user->email . ";[product]:" . $product->id . ";[key]:" . $key . ";[error]:email successfully sent;");
         }
 
         return view('mailForm');

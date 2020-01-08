@@ -15,6 +15,8 @@ use App\Product;
 
 Auth::routes();
 
+Route::get('/log', 'API\UserController@log');
+
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/mail', 'MailController@index')->name('mailForm');

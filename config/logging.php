@@ -89,6 +89,24 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'mailgun' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/mailgun.log'),
+            'level' => 'info',
+        ],
+
+        'google-auth' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/google-auth.log'),
+            'level' => 'info',
+        ],
+
+        'local-auth' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/local-auth.log'),
+            'level' => 'info',
+        ],
     ],
 
 ];
