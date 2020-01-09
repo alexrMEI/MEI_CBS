@@ -43,7 +43,7 @@ class RecordFailedLoginAttempt
 
             // Replace with notification/alert in the system
             if ($lastFailedAttempt->gt(Carbon::now()->subMinutes(15))) {
-                \Log::info('User login failed 3 times in the past 15 minutes, ip: ' . $userAttempts->last()->ip_address . '; First Attempt: ' . Carbon::createFromFormat('Y-m-d H:i:s', $lastFailedAttempt)->format('Y-m-d H:i:s'));
+                \Log::info(Carbon::createFromFormat('Y-m-d H:i:s', $lastFailedAttempt)->format('Y-m-d H:i:s') . ' ' . $userAttempts->last()->ip_address . ' User login failed 3 times in the past 15 minutes.');
             }
         } else {
 
@@ -53,7 +53,7 @@ class RecordFailedLoginAttempt
 
             // Replace with notification/alert in the system
             if ($lastFailedAttempt->gt(Carbon::now()->subMinutes(15))) {
-                \Log::info('Ip tried to loggin 3 times in the past 15 minutes, ip: ' . $ipAttempts->last()->ip_address . '; First Attempt: ' . Carbon::createFromFormat('Y-m-d H:i:s', $lastFailedAttempt)->format('Y-m-d H:i:s'));
+                \Log::info(Carbon::createFromFormat('Y-m-d H:i:s', $lastFailedAttempt)->format('Y-m-d H:i:s') . ' ' . $userAttempts->last()->ip_address . ' User login failed 3 times in the past 15 minutes.');
             }
         }
 

@@ -11,9 +11,9 @@ class UserController extends Controller
 {
     public function log()
     {
-        Log::channel('mailgun')->error('[2020-01-08 17:53:09] local.ERROR: Email not sent to the user.');
-        Log::channel('google-auth')->error('[2020-01-08 17:53:09] local.ERROR: [2020-01-08 17:53:09] local.ERROR: User failed to login using google auth. Connection timeout.');
-        Log::channel('local-auth')->error('[2020-01-08 17:53:09] local.ERROR: User login failed 3 times in the past 15 minutes, ip: 194.210.216.130; First Attempt: 2020-01-08 17:03:38');
+        Log::channel('mailgun')->error('client@my.ipleiria.pt 1 Connection timeout.');
+        Log::channel('mailgun')->error('client@my.ipleiria.pt 4 Connection timeout to server.');
+        Log::channel('local-auth')->error('2020-01-08 17:03:38 194.210.216.130 User login failed 3 times in the past 15 minutes');
         return response()->json('success', 200);
     }
 

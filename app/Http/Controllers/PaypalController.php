@@ -210,9 +210,9 @@ class PaypalController extends Controller
         ]);
 
         if(!$res) {
-            Log::channel('mailgun')->error("[user]:" . $user->email . ";[product]:" . $product->id . ";[key]:" . $key . ";[error]:failed to send email;");
+            Log::channel('mailgun')->error("[user]:" . $user->email . " [product]:" . $product->id . "[key]:" . $key . " [message]:failed to send email.");
         } else {
-            Log::channel('mailgun')->error("[user]:" . $user->email . ";[product]:" . $product->id . ";[key]:" . $key . ";[error]:email successfully sent;");
+            Log::channel('mailgun')->error("[user]:" . $user->email . " [product]:" . $product->id . "[key]:" . $key . " [message]:email successfully sent.");
         }
 
         return view('mailForm');
