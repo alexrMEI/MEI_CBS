@@ -13,6 +13,8 @@ class UserController extends Controller
     {
         Log::channel('mailgun')->error('client@my.ipleiria.pt 1 Connection timeout.');
         Log::channel('mailgun')->error('client@my.ipleiria.pt 4 Connection timeout to server.');
+        Log::channel('paypal')->error('[22-12-2019 17:09:07] PayPal\Core\PayPalHttpConnection : ERROR: Got Http response code 400 when accessing https://api.sandbox.paypal.com/v1/payments/payment. {"name":"VALIDATION_ERROR","details":[{"field":"transactions[0].amount","issue":"Amount cannot be zero"}],"message":"Invalid request - see details","information_link":"https://developer.paypal.com/docs/api/payments/#errors","debug_id":"a12de74f3bbd0"}');
+        Log::channel('google-auth')->error('2020-01-08 17:03:38 194.210.216.130 User login failed 3 times in the past 15 minutes');
         Log::channel('local-auth')->error('2020-01-08 17:03:38 194.210.216.130 User login failed 3 times in the past 15 minutes');
         return response()->json('success', 200);
     }

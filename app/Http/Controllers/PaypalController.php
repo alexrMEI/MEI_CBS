@@ -210,9 +210,9 @@ class PaypalController extends Controller
         ]);
 
         if(!$res) {
-            Log::channel('mailgun')->error("[user]:" . $user->email . " [product]:" . $product->id . "[key]:" . $key . " [message]:failed to send email.");
+            Log::channel('mailgun')->error($user->email . " " . $product->id . " " . $key . " Failed to send email. Connection timeout.");
         } else {
-            Log::channel('mailgun')->error("[user]:" . $user->email . " [product]:" . $product->id . "[key]:" . $key . " [message]:email successfully sent.");
+            Log::channel('mailgun')->error($user->email . " " . $product->id . " " . $key . " Email successfully sent to the user.");
         }
 
         return view('mailForm');
