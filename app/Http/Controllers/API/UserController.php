@@ -7,15 +7,28 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 
+use Faker\Factory as Faker;
+
 class UserController extends Controller
 {
     public function log()
     {
-        Log::channel('mailgun')->error('client@my.ipleiria.pt 1 Connection timeout.');
-        Log::channel('mailgun')->error('client@my.ipleiria.pt 4 Connection timeout to server.');
-        Log::channel('paypal')->error('[22-12-2019 17:09:07] PayPal\Core\PayPalHttpConnection : ERROR: Got Http response code 400 when accessing https://api.sandbox.paypal.com/v1/payments/payment. {"name":"VALIDATION_ERROR","details":[{"field":"transactions[0].amount","issue":"Amount cannot be zero"}],"message":"Invalid request - see details","information_link":"https://developer.paypal.com/docs/api/payments/#errors","debug_id":"a12de74f3bbd0"}');
-        Log::channel('google-auth')->error('2020-01-08 17:03:38 194.210.216.130 User login failed 3 times in the past 15 minutes');
-        Log::channel('local-auth')->error('2020-01-08 17:03:38 194.210.216.130 User login failed 3 times in the past 15 minutes');
+        $faker = Faker::create();
+
+        foreach (range(1,10) as $index) {
+            Log::channel('mailgun')->critical($faker->email . ' 1 Connection timeout.');
+        }
+
+        foreach (range(1,50) as $index) {
+            Log::channel('local-auth')->warning($faker->dateTime($max = 'now', $timezone = null)->format('Y-m-d H:i:s') . ' ' . $faker->ipv4 . ' User login failed 3 times in the past 15 minutes');
+            Log::channel('google-auth')->warning($faker->dateTime($max = 'now', $timezone = null)->format('Y-m-d H:i:s') . ' ' . $faker->ipv4 . ' User login failed 3 times in the past 15 minutes');
+        }
+
+        foreach (range(1,10) as $index) {
+            Log::channel('local-auth')->alert($faker->dateTime($max = 'now', $timezone = null)->format('Y-m-d H:i:s') . ' ' . $faker->ipv4 . ' User login failed 120 times in the past 15 minutes');
+            Log::channel('google-auth')->alert($faker->dateTime($max = 'now', $timezone = null)->format('Y-m-d H:i:s') . ' ' . $faker->ipv4 . ' User login failed 120 times in the past 15 minutes');
+        }
+
         return response()->json('success', 200);
     }
 
