@@ -49,12 +49,12 @@
                                                     <a href="{{ route('remove', [ $cartItem->rowId ]) }}">x</a>
                                                 </td>
                                                 <td>{{ $cartItem->name }}</td>
-                                                <td>{{ $cartItem->price }} USD</td>
+                                                <td>{{ $cartItem->price }} €</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
                                     </table>
-                                    <p class="uk-text-bold">Total: {{ number_format(Cart::subtotal(), 2) }} USD</p>
+                                    <p class="uk-text-bold">Total: {{ number_format(Cart::subtotal(), 2) }} €</p>
                                 </div>
                                 <div class="modal-footer">
                                     <!-- Clear shopping cart button -->
